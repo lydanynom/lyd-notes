@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>For You</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #141414;
+      --text: #f0e6d8;
+      --muted: #9a8f82;
+      --accent: #c9a87c;
+      --border: #2a2a2a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      min-height: 100dvh;
+    }
+
+    /* ===== GATE ===== */
+    #gate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    #gate h1 {
+      font-weight: 300;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+
+    #gate p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 2.2rem;
+    }
+
+    #password {
+      width: 100%;
+      max-width: 260px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.95rem 1.1rem;
+      color: var(--text);
+      font-size: 1.05rem;
+      text-align: center;
+      outline: none;
+      letter-spacing: 0.04em;
+    }
+
+    #password:focus {
+      border-color: var(--accent);
+    }
+
+    #enter {
+      margin-top: 1.1rem;
+      width: 100%;
+      max-width: 260px;
+      background: var(--accent);
+      color: #0a0a0a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.95rem;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+    }
+
+    #enter:active {
+      opacity: 0.85;
+    }
+
+    #error {
+      margin-top: 1rem;
+      color: #c97c7c;
+      font-size: 0.9rem;
+      min-height: 1.2em;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    #error.show {
+      opacity: 1;
+    }
+
+    /* ===== CONTENT ===== */
+    #content {
+      display: none;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 1.8rem 1.25rem 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.4rem;
+    }
+
+    header h1 {
+      font-weight: 300;
+      font-size: 1.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    header .sub {
+      margin-top: 0.35rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 400;
+    }
+
+    .video-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 1.6rem;
+    }
+
+    .video-card .meta {
+      padding: 1.1rem 1.2rem 0.7rem;
+    }
+
+    .video-card h2 {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .video-card .date {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      background: #000;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.7rem;
+      padding: 0.9rem 1.2rem 1.15rem;
+    }
+
+    .download-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 0.7rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .download-btn:active {
+      background: #1c1c1c;
+    }
+
+    .note {
+      text-align: center;
+      margin-top: 2.5rem;
+      padding: 0 1rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    .note strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <!-- PASSWORD GATE -->
+  <div id="gate">
+    <h1>For you</h1>
+    <p>Enter the word</p>
+    <input type="password" id="password" placeholder="••••••••" autocomplete="off" enterkeyhint="go">
+    <button id="enter">Open</button>
+    <div id="error">Wrong word</div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="content">
+    <header>
+      <h1>Monologues</h1>
+      <div class="sub">Recorded just for you</div>
+    </header>
+
+    <!-- VIDEO 1 - EXAMPLE -->
+    <div class="video-card">
+      <div class="meta">
+        <h2>Example — how it will look</h2>
+        <div class="date">This is a sample so you can test the player on your phone</div>
+      </div>
+      <video
+        controls
+        playsinline
+        preload="metadata"
+        poster=""
+        src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="actions">
+        <a class="download-btn" href="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" download="monologue-example.mp4">
+          ↓ Download
+        </a>
+      </div>
+    </div>
+
+    <!-- VIDEO 2 - PLACEHOLDER FOR REAL ONES -->
+    <div class="video-card">
+      <div class="meta">
+        <h2>Your first monologue</h2>
+        <div class="date">Waiting for you…</div>
+      </div>
+      <div style="aspect-ratio:16/9;background:#111;display:flex;align-items:center;justify-content:center;color:#555;font-size:0.9rem;">
+        Video will appear here
+      </div>
+      <div class="actions">
+        <span class="download-btn" style="opacity:0.4;pointer-events:none;">↓ Download</span>
+      </div>
+    </div>
+
+    <div class="note">
+      This page is private to the two of us.<br>
+      When you record the next one, just send it and it will be added here.
+    </div>
+  </div>
+
+  <script>
+    const PASSWORD = "onlyyou";
+    const gate = document.getElementById("gate");
+    const content = document.getElementById("content");
+    const input = document.getElementById("password");
+    const btn = document.getElementById("enter");
+    const error = document.getElementById("error");
+
+    // Remember for this browser session
+    if (sessionStorage.getItem("unlocked") === "yes") {
+      gate.style.display = "none";
+      content.style.display = "block";
+    }
+
+    function tryUnlock() {
+      if (input.value.trim().toLowerCase() === PASSWORD) {
+        sessionStorage.setItem("unlocked", "yes");
+        gate.style.display = "none";
+        content.style.display = "block";
+        // soft scroll to top
+        window.scrollTo(0, 0);
+      } else {
+        error.classList.add("show");
+        input.value = "";
+        input.focus();
+        setTimeout(() => error.classList.remove("show"), 1800);
+      }
+    }
+
+    btn.addEventListener("click", tryUnlock);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") tryUnlock();
+    });
+
+    // Auto focus on load
+    setTimeout(() => input.focus(), 300);
+  </script>
+</body>
+</html>
